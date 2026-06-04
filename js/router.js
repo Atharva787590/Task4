@@ -1,55 +1,45 @@
-import {
-  homeView,
-  productsView,
-  savedView,
-  productDetailView,
-  cartView,
-  aboutView,
-  notFoundView
-} from "./views.js";
-
-function parseHash() {
+function getSegments() {
   const hash = window.location.hash || "#/";
-  const clean = hash.replace(/^#/, "");
-  const segments = clean.split("/").filter(Boolean);
-
-  return segments;
+  return hash.replace(/^#/, "").split("/").filter(Boolean);
 }
 
-export function resolveRoute() {
-  const segments = parseHash();
+export function getCurrentRoute() {
+  const segments = getSegments();
 
   if (segments.length === 0) {
-    return homeView();
+    return { name: "home" };
   }
 
-  const [route, param] = segments;
-
-  if (route === "products") {
-    return productsView();
+  if (segments[0] === "products") {
+    return { name: "products" };
   }
 
-  if (route === "saved") {
-    return savedView();
+  if (segments[0] === "saved") {
+    return { name: "saved" };
   }
 
-  if (route === "product" && param) {
-    return productDetailView(param);
+  if (segments[0] === "cart") {
+    return { name: "cart" };
   }
 
-  if (route === "cart") {
-    return cartView();
+  if (segments[0] === "checkout") {
+    return { name: "checkout" };
   }
 
-  if (route === "about") {
-    return aboutView();
+  if (segments[0] === "about") {
+    return { name: "about" };
   }
 
-  return notFoundView();
+  if (segments[0] === "product" && segments[1]) {
+    return { name: "product", slug: segments[1] };
+  }
+
+  return { name: "not-found" };
 }
 
-export function getCurrentTopRoute() {
-  const segments = parseHash();
-  if (segments.length === 0) return "home";
-  return segments[0];
+export function getActiveNavName() {
+  const route = getCurrentRoute();
+  if (route.name === "product") return "products";
+  if (route.name === "not-found") return "";
+  return route.name;
 }

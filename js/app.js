@@ -1,42 +1,36 @@
-import { resolveRoute, getCurrentTopRoute } from "./router.js";
+import { fetchProducts } from "./api.js";
 import {
   subscribe,
-  actions,
+  setProducts,
+  getState,
+  getCategories,
+  getFilteredProducts,
+  getSavedProducts,
+  getSavedCount,
   getCartCount,
-  getFavoritesCount
+  getProductBySlug,
+  getRelatedProducts,
+  getCartItems,
+  getCartSubtotal,
+  actions,
+  isSaved
 } from "./store.js";
+import { getCurrentRoute, getActiveNavName } from "./router.js";
+import {
+  renderHome,
+  renderProducts,
+  renderSaved,
+  renderProductDetail,
+  renderCart,
+  renderCheckout,
+  renderAbout,
+  renderNotFound
+} from "./views.js";
 
 const appRoot = document.getElementById("app");
-const cartCountEl = document.getElementById("cart-count");
 const savedCountEl = document.getElementById("saved-count");
+const cartCountEl = document.getElementById("cart-count");
 const toastEl = document.getElementById("toast");
-
-function updateHeaderCounts() {
-  cartCountEl.textContent = getCartCount();
-  savedCountEl.textContent = getFavoritesCount();
-}
-
-function updateActiveNav() {
-  const current = getCurrentTopRoute();
-  const navLinks = document.querySelectorAll("[data-nav]");
-
-  navLinks.forEach((link) => {
-    const route = link.dataset.nav;
-    const active =
-      (current === "home" && route === "home") ||
-      (current !== "home" && current === route);
-
-    link.classList.toggle("is-active", active);
-  });
-}
-
-function render() {
-  const view = resolveRoute();
-  document.title = view.title;
-  appRoot.innerHTML = view.html;
-  updateHeaderCounts();
-  updateActiveNav();
-}
 
 function showToast(message) {
   toastEl.textContent = message;
@@ -48,9 +42,76 @@ function showToast(message) {
   }, 2200);
 }
 
-window.addEventListener("app:toast", (event) => {
+window.addEventListener("zweep:toast", (event) => {
   showToast(event.detail);
 });
+
+function updateHeader() {
+  savedCountEl.textContent = getSavedCount();
+  cartCountEl.textContent = getCartCount();
+
+  const active = getActiveNavName();
+  document.querySelectorAll("[data-nav]").forEach((link) => {
+    link.classList.toggle("is-active", link.dataset.nav === active);
+  });
+}
+
+function render() {
+  const route = getCurrentRoute();
+  const state = getState();
+  let view;
+
+  if (route.name === "home") {
+    view = renderHome({
+      products: state.products,
+      savedIds: state.saved,
+      cartCount: getCartCount(),
+      savedCount: getSavedCount()
+    });
+  } else if (route.name === "products") {
+    view = renderProducts({
+      products: getFilteredProducts(),
+      filters: state.filters,
+      categories: getCategories(),
+      savedIds: state.saved
+    });
+  } else if (route.name === "saved") {
+    view = renderSaved({
+      products: getSavedProducts(),
+      savedIds: state.saved
+    });
+  } else if (route.name === "product") {
+    const product = getProductBySlug(route.slug);
+    if (!product) {
+      view = renderNotFound();
+    } else {
+      view = renderProductDetail({
+        product,
+        related: getRelatedProducts(product),
+        savedIds: state.saved
+      });
+    }
+  } else if (route.name === "cart") {
+    view = renderCart({
+      items: getCartItems(),
+      subtotal: getCartSubtotal()
+    });
+  } else if (route.name === "checkout") {
+    view = renderCheckout({
+      items: getCartItems(),
+      subtotal: getCartSubtotal(),
+      lastOrder: state.lastOrder
+    });
+  } else if (route.name === "about") {
+    view = renderAbout();
+  } else {
+    view = renderNotFound();
+  }
+
+  document.title = view.title;
+  appRoot.innerHTML = view.html;
+  updateHeader();
+}
 
 window.addEventListener("hashchange", () => {
   render();
@@ -71,8 +132,12 @@ appRoot.addEventListener("click", (event) => {
     actions.addToCart(productId);
   }
 
-  if (action === "toggle-favorite") {
-    actions.toggleFavorite(productId);
+  if (action === "buy-now") {
+    actions.buyNow(productId);
+  }
+
+  if (action === "toggle-saved") {
+    actions.toggleSaved(productId);
   }
 
   if (action === "increase-qty") {
@@ -95,8 +160,8 @@ appRoot.addEventListener("click", (event) => {
     actions.resetFilters();
   }
 
-  if (action === "jump-category") {
-    actions.setCategoryAndOpenProducts(category);
+  if (action === "open-category") {
+    actions.openCategory(category);
   }
 });
 
@@ -106,14 +171,71 @@ appRoot.addEventListener("submit", (event) => {
 
   event.preventDefault();
 
-  if (form.dataset.form === "catalog-search") {
+  if (form.dataset.form === "catalog-filters") {
     const formData = new FormData(form);
+
     actions.setFilters({
       search: formData.get("search")?.toString() || "",
       category: formData.get("category")?.toString() || "all",
       sort: formData.get("sort")?.toString() || "featured"
     });
   }
+
+  if (form.dataset.form === "checkout-form") {
+    const formData = new FormData(form);
+
+    const payload = {
+      fullName: formData.get("fullName")?.toString().trim(),
+      email: formData.get("email")?.toString().trim(),
+      phone: formData.get("phone")?.toString().trim(),
+      paymentMethod: formData.get("paymentMethod")?.toString().trim(),
+      address: formData.get("address")?.toString().trim(),
+      city: formData.get("city")?.toString().trim(),
+      postalCode: formData.get("postalCode")?.toString().trim(),
+      notes: formData.get("notes")?.toString().trim()
+    };
+
+    if (!payload.fullName || !payload.email || !payload.phone || !payload.paymentMethod || !payload.address || !payload.city || !payload.postalCode) {
+      showToast("Please complete all required checkout fields");
+      return;
+    }
+
+    try {
+      actions.placeOrder(payload);
+      window.location.hash = "#/checkout";
+    } catch (error) {
+      showToast(error.message);
+    }
+  }
 });
 
-render();
+async function boot() {
+  appRoot.innerHTML = `
+    <section class="catalog-page">
+      <div class="empty-card">
+        <h2>Loading Zweep...</h2>
+        <p class="card-copy">Fetching products and preparing the experience.</p>
+      </div>
+    </section>
+  `;
+
+  try {
+    const products = await fetchProducts();
+    setProducts(products);
+    render();
+  } catch (error) {
+    appRoot.innerHTML = `
+      <section class="catalog-page">
+        <div class="empty-card">
+          <h2>Unable to load catalog</h2>
+          <p class="card-copy">${error.message}</p>
+          <div class="empty-actions">
+            <button class="primary-btn" onclick="window.location.reload()">Try Again</button>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+}
+
+boot();
