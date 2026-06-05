@@ -1,42 +1,69 @@
-import { products, getProductById } from "./data/products.js";
-
-const STORAGE_KEY = "task4-nexcart-store";
-
+const STORAGE_KEY = "task4-zweep-store";
 const listeners = [];
 
-const defaultState = {
-  cart: [],
-  favorites: [],
-  filters: {
-    search: "",
-    category: "all",
-    sort: "featured"
-  }
-};
-
-function loadState() {
+function readStorage() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return structuredClone(defaultState);
+
+    if (!saved) {
+      return {
+        cart: [],
+        saved: [],
+        filters: {
+          search: "",
+          category: "all",
+          sort: "featured"
+        },
+        lastOrder: null
+      };
+    }
 
     const parsed = JSON.parse(saved);
+
     return {
       cart: Array.isArray(parsed.cart) ? parsed.cart : [],
-      favorites: Array.isArray(parsed.favorites) ? parsed.favorites : [],
+      saved: Array.isArray(parsed.saved) ? parsed.saved : [],
       filters: {
-        ...defaultState.filters,
-        ...(parsed.filters || {})
-      }
+        search: parsed.filters?.search || "",
+        category: parsed.filters?.category || "all",
+        sort: parsed.filters?.sort || "featured"
+      },
+      lastOrder: parsed.lastOrder || null
     };
   } catch (error) {
-    return structuredClone(defaultState);
+    return {
+      cart: [],
+      saved: [],
+      filters: {
+        search: "",
+        category: "all",
+        sort: "featured"
+      },
+      lastOrder: null
+    };
   }
 }
 
-const state = loadState();
+const base = readStorage();
+
+const state = {
+  products: [],
+  cart: base.cart,
+  saved: base.saved,
+  filters: base.filters,
+  lastOrder: base.lastOrder
+};
 
 function persist() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({
+      cart: state.cart,
+      saved: state.saved,
+      filters: state.filters,
+      lastOrder: state.lastOrder
+    })
+  );
 }
 
 function notify() {
@@ -45,89 +72,109 @@ function notify() {
 }
 
 function toast(message) {
-  window.dispatchEvent(new CustomEvent("app:toast", { detail: message }));
-}
-
-export function getState() {
-  return {
-    cart: [...state.cart],
-    favorites: [...state.favorites],
-    filters: { ...state.filters }
-  };
+  window.dispatchEvent(new CustomEvent("zweep:toast", { detail: message }));
 }
 
 export function subscribe(listener) {
   listeners.push(listener);
 }
 
+export function setProducts(products) {
+  state.products = products;
+  notify();
+}
+
+export function getState() {
+  return {
+    products: [...state.products],
+    cart: [...state.cart],
+    saved: [...state.saved],
+    filters: { ...state.filters },
+    lastOrder: state.lastOrder
+  };
+}
+
+export function getCategories() {
+  return ["all", ...new Set(state.products.map((product) => product.category))];
+}
+
 export function getCartCount() {
   return state.cart.reduce((sum, item) => sum + item.qty, 0);
 }
 
-export function getFavoritesCount() {
-  return state.favorites.length;
+export function getSavedCount() {
+  return state.saved.length;
 }
 
-export function isFavorite(productId) {
-  return state.favorites.includes(Number(productId));
+export function isSaved(productId) {
+  return state.saved.includes(Number(productId));
 }
 
-export function getCartItemsDetailed() {
+export function getFilteredProducts() {
+  const { search, category, sort } = state.filters;
+  let items = [...state.products];
+
+  if (search.trim()) {
+    const query = search.trim().toLowerCase();
+    items = items.filter(
+      (product) =>
+        product.title.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query) ||
+        product.category.toLowerCase().includes(query)
+    );
+  }
+
+  if (category !== "all") {
+    items = items.filter((product) => product.category === category);
+  }
+
+  if (sort === "price-asc") {
+    items.sort((a, b) => a.price - b.price);
+  } else if (sort === "price-desc") {
+    items.sort((a, b) => b.price - a.price);
+  } else if (sort === "rating") {
+    items.sort((a, b) => b.rating - a.rating);
+  } else {
+    items.sort((a, b) => {
+      if (a.rating === b.rating) return b.ratingCount - a.ratingCount;
+      return b.rating - a.rating;
+    });
+  }
+
+  return items;
+}
+
+export function getProductBySlug(slug) {
+  return state.products.find((product) => product.slug === slug);
+}
+
+export function getRelatedProducts(product) {
+  return state.products
+    .filter((item) => item.category === product.category && item.id !== product.id)
+    .slice(0, 4);
+}
+
+export function getSavedProducts() {
+  return state.products.filter((product) => state.saved.includes(product.id));
+}
+
+export function getCartItems() {
   return state.cart
-    .map((item) => {
-      const product = getProductById(item.id);
+    .map((entry) => {
+      const product = state.products.find((item) => item.id === entry.id);
       if (!product) return null;
 
       return {
         ...product,
-        qty: item.qty,
-        lineTotal: product.price * item.qty
+        qty: entry.qty,
+        lineTotal: Number((product.price * entry.qty).toFixed(2))
       };
     })
     .filter(Boolean);
 }
 
 export function getCartSubtotal() {
-  return getCartItemsDetailed().reduce((sum, item) => sum + item.lineTotal, 0);
-}
-
-export function getSavedProducts() {
-  return products.filter((product) => state.favorites.includes(product.id));
-}
-
-export function getFilteredProducts() {
-  let filtered = [...products];
-  const { search, category, sort } = state.filters;
-
-  if (search.trim()) {
-    const query = search.trim().toLowerCase();
-    filtered = filtered.filter(
-      (product) =>
-        product.name.toLowerCase().includes(query) ||
-        product.category.toLowerCase().includes(query) ||
-        product.short.toLowerCase().includes(query)
-    );
-  }
-
-  if (category !== "all") {
-    filtered = filtered.filter((product) => product.category === category);
-  }
-
-  if (sort === "price-asc") {
-    filtered.sort((a, b) => a.price - b.price);
-  } else if (sort === "price-desc") {
-    filtered.sort((a, b) => b.price - a.price);
-  } else if (sort === "rating") {
-    filtered.sort((a, b) => b.rating - a.rating);
-  } else {
-    filtered.sort((a, b) => {
-      if (a.featured && !b.featured) return -1;
-      if (!a.featured && b.featured) return 1;
-      return b.rating - a.rating;
-    });
-  }
-
-  return filtered;
+  return getCartItems().reduce((sum, item) => sum + item.lineTotal, 0);
 }
 
 export const actions = {
@@ -142,8 +189,18 @@ export const actions = {
     }
 
     notify();
-    const product = getProductById(id);
-    toast(`${product?.name || "Product"} added to cart`);
+    const product = state.products.find((item) => item.id === id);
+    toast(`${product?.title || "Product"} added to cart`);
+  },
+
+  buyNow(productId) {
+    const id = Number(productId);
+    state.cart = [{ id, qty: 1 }];
+    notify();
+
+    const product = state.products.find((item) => item.id === id);
+    toast(`${product?.title || "Product"} ready for checkout`);
+    window.location.hash = "#/checkout";
   },
 
   removeFromCart(productId) {
@@ -179,15 +236,15 @@ export const actions = {
     toast("Cart cleared");
   },
 
-  toggleFavorite(productId) {
+  toggleSaved(productId) {
     const id = Number(productId);
-    const exists = state.favorites.includes(id);
+    const exists = state.saved.includes(id);
 
     if (exists) {
-      state.favorites = state.favorites.filter((entry) => entry !== id);
+      state.saved = state.saved.filter((entry) => entry !== id);
       toast("Removed from saved");
     } else {
-      state.favorites.push(id);
+      state.saved.push(id);
       toast("Added to saved");
     }
 
@@ -211,13 +268,35 @@ export const actions = {
     notify();
   },
 
-  setCategoryAndOpenProducts(category) {
+  openCategory(category) {
     state.filters = {
       ...state.filters,
+      search: "",
       category,
-      search: ""
+      sort: "featured"
     };
     notify();
     window.location.hash = "#/products";
+  },
+
+  placeOrder(formData) {
+    const items = getCartItems();
+    if (!items.length) {
+      throw new Error("Your cart is empty.");
+    }
+
+    const orderId = `ZW-${Date.now()}`;
+    state.lastOrder = {
+      id: orderId,
+      customer: formData.fullName,
+      email: formData.email,
+      total: getCartSubtotal(),
+      placedAt: new Date().toLocaleString()
+    };
+
+    state.cart = [];
+    notify();
+    toast("Order placed successfully");
+    return state.lastOrder;
   }
 };

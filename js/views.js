@@ -80,53 +80,31 @@ export function renderHome({ products, savedIds, cartCount, savedCount }) {
     title: "Zweep",
     html: `
       <section class="hero">
-        <article class="hero-card">
-          <div class="hero-copy">
-            <span class="kicker">Modern Commerce Capstone</span>
-            <h1 class="hero-title">Discover premium shopping through a <span>cleaner digital experience.</span></h1>
-            <p class="hero-text">
-              Zweep is a live product catalog built with real product data, modular frontend architecture,
-              route-based navigation, persistent state, and a polished cart-to-checkout flow.
-            </p>
+        <article class="hero-box hero-main">
+          <span class="kicker">Neo-Brutalist Commerce</span>
+          <h1 class="hero-title">Discover premium products through a <span>bold shopping experience.</span></h1>
+          <p class="hero-text">
+            Zweep is a modular e-commerce catalog built for real product discovery, route-based browsing,
+            persistent cart state, and a strong visual identity.
+          </p>
 
-            <div class="cta-row">
-              <a class="primary-btn" href="#/products">Shop Now</a>
-              <a class="secondary-btn" href="#/about">See Architecture</a>
-            </div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="#/products">Shop Now</a>
+            <a class="secondary-btn" href="#/about">Project Architecture</a>
           </div>
         </article>
 
-        <aside class="hero-card hero-visual">
-          <div class="metric-grid">
-            <div class="metric-card">
-              <strong>20</strong>
-              <span>Real products</span>
-            </div>
-            <div class="metric-card">
-              <strong>${cartCount}</strong>
-              <span>Cart items</span>
-            </div>
-            <div class="metric-card">
-              <strong>${savedCount}</strong>
-              <span>Saved products</span>
-            </div>
-            <div class="metric-card">
-              <strong>SPA</strong>
-              <span>Route-based flow</span>
-            </div>
+        <aside class="hero-side">
+          <div class="hero-stats">
+            <div class="stat-box"><strong>20</strong><span>Products</span></div>
+            <div class="stat-box"><strong>${cartCount}</strong><span>Cart Items</span></div>
+            <div class="stat-box"><strong>${savedCount}</strong><span>Saved Items</span></div>
           </div>
 
           <div class="hero-gallery">
             ${gallery.map(product => `
               <div class="gallery-tile">
-                <img
-                  src="${product.image}"
-                  alt="${product.title}"
-                  width="400"
-                  height="300"
-                  loading="eager"
-                  decoding="async"
-                />
+                <img src="${product.image}" alt="${product.title}" width="400" height="300" />
               </div>
             `).join("")}
           </div>
@@ -137,9 +115,9 @@ export function renderHome({ products, savedIds, cartCount, savedCount }) {
         <div class="section-heading">
           <div>
             <h2>Featured collection</h2>
-            <p>Carefully surfaced products with strong ratings, pricing, and browsing appeal.</p>
+            <p>Real products, real images, and a sharper browsing flow.</p>
           </div>
-          <a class="secondary-btn" href="#/products">Open full catalog</a>
+          <a class="secondary-btn" href="#/products">View all</a>
         </div>
 
         <div class="catalog-grid">
@@ -151,7 +129,7 @@ export function renderHome({ products, savedIds, cartCount, savedCount }) {
         <div class="section-heading">
           <div>
             <h2>Shop by category</h2>
-            <p>Move directly into the collection you want to explore.</p>
+            <p>Jump directly into your preferred product type.</p>
           </div>
         </div>
 
@@ -159,25 +137,25 @@ export function renderHome({ products, savedIds, cartCount, savedCount }) {
           <button class="category-card" data-action="open-category" data-category="electronics" type="button">
             <div class="category-icon" style="background:#4f46e5;">E</div>
             <h3>Electronics</h3>
-            <p class="card-copy">Connected devices, digital essentials, and everyday performance tools.</p>
+            <p class="card-copy">Digital devices and performance-ready essentials.</p>
           </button>
 
           <button class="category-card" data-action="open-category" data-category="jewelery" type="button">
-            <div class="category-icon" style="background:#f59e0b;">J</div>
+            <div class="category-icon" style="background:#ffd93d;">J</div>
             <h3>Jewelery</h3>
-            <p class="card-copy">Statement accessories with a polished, premium presentation.</p>
+            <p class="card-copy">Statement pieces with premium finish and visual appeal.</p>
           </button>
 
           <button class="category-card" data-action="open-category" data-category="men's clothing" type="button">
-            <div class="category-icon" style="background:#10b981;">M</div>
+            <div class="category-icon" style="background:#7ed957;">M</div>
             <h3>Men's Clothing</h3>
-            <p class="card-copy">Versatile clothing options built around comfort and daily wear.</p>
+            <p class="card-copy">Comfort-driven and everyday-ready styles.</p>
           </button>
 
           <button class="category-card" data-action="open-category" data-category="women's clothing" type="button">
-            <div class="category-icon" style="background:#ec4899;">W</div>
+            <div class="category-icon" style="background:#ff6b6b;">W</div>
             <h3>Women's Clothing</h3>
-            <p class="card-copy">Refined wardrobe pieces curated for lifestyle-ready shopping.</p>
+            <p class="card-copy">Curated lifestyle picks for stylish daily wear.</p>
           </button>
         </div>
       </section>
@@ -185,23 +163,23 @@ export function renderHome({ products, savedIds, cartCount, savedCount }) {
       <section class="section-block">
         <div class="feature-grid">
           <article class="feature-card">
-            <h3>Modular frontend architecture</h3>
+            <h3>Modular Architecture</h3>
             <p class="card-copy">
-              Data, state, routing, and rendering are separated into clear modules for maintainability and scale.
+              The app is split into data, API, store, router, views, and app logic for maintainability and clean architecture.
             </p>
           </article>
 
           <article class="feature-card">
-            <h3>Persistent shopping experience</h3>
+            <h3>Client-Side Routing</h3>
             <p class="card-copy">
-              Cart and saved items remain available across reloads through localStorage-driven state.
+              Navigation remains smooth between Home, Products, Product Detail, Saved, Cart, and Checkout.
             </p>
           </article>
 
           <article class="feature-card">
-            <h3>Production-ready deployment</h3>
+            <h3>Production Ready</h3>
             <p class="card-copy">
-              The app is lightweight, route-driven, and ready for a live public URL on Netlify or Vercel.
+              Persistent state, route flow, optimized loading, and deployment-ready structure make this a strong capstone.
             </p>
           </article>
         </div>
@@ -217,42 +195,44 @@ export function renderProducts({ products, filters, categories, savedIds }) {
       <section class="catalog-page">
         <div class="section-heading">
           <div>
-            <h2>Product catalog</h2>
-            <p>Search, filter, and sort a live 20-product collection with a smooth browsing experience.</p>
+            <h2>Products</h2>
+            <p>Search, filter, sort, and browse all products in one clean route.</p>
           </div>
         </div>
 
         <form class="catalog-toolbar" data-form="catalog-filters">
-          <div class="search-box">
-            <input
-              type="text"
-              name="search"
-              value="${filters.search}"
-              placeholder="Search product name, category, or keywords..."
-            />
-          </div>
+          <div class="filter-row">
+            <div class="search-box">
+              <input
+                type="text"
+                name="search"
+                value="${filters.search}"
+                placeholder="Search product name, category, or keyword..."
+              />
+            </div>
 
-          <div class="select-box">
-            <select name="category">
-              ${categories.map(category => `
-                <option value="${category}" ${filters.category === category ? "selected" : ""}>
-                  ${category === "all" ? "All Categories" : categoryLabel(category)}
-                </option>
-              `).join("")}
-            </select>
-          </div>
+            <div class="select-box">
+              <select name="category">
+                ${categories.map(category => `
+                  <option value="${category}" ${filters.category === category ? "selected" : ""}>
+                    ${category === "all" ? "All Categories" : categoryLabel(category)}
+                  </option>
+                `).join("")}
+              </select>
+            </div>
 
-          <div class="select-box">
-            <select name="sort">
-              <option value="featured" ${filters.sort === "featured" ? "selected" : ""}>Featured</option>
-              <option value="price-asc" ${filters.sort === "price-asc" ? "selected" : ""}>Price: Low to High</option>
-              <option value="price-desc" ${filters.sort === "price-desc" ? "selected" : ""}>Price: High to Low</option>
-              <option value="rating" ${filters.sort === "rating" ? "selected" : ""}>Top Rated</option>
-            </select>
-          </div>
+            <div class="select-box">
+              <select name="sort">
+                <option value="featured" ${filters.sort === "featured" ? "selected" : ""}>Featured</option>
+                <option value="price-asc" ${filters.sort === "price-asc" ? "selected" : ""}>Price: Low to High</option>
+                <option value="price-desc" ${filters.sort === "price-desc" ? "selected" : ""}>Price: High to Low</option>
+                <option value="rating" ${filters.sort === "rating" ? "selected" : ""}>Top Rated</option>
+              </select>
+            </div>
 
-          <button class="primary-btn" type="submit">Apply</button>
-          <button class="ghost-btn" type="button" data-action="reset-filters">Reset</button>
+            <button class="primary-btn" type="submit">Apply</button>
+            <button class="ghost-btn" type="button" data-action="reset-filters">Reset</button>
+          </div>
         </form>
 
         <div class="catalog-results-meta">
@@ -265,8 +245,8 @@ export function renderProducts({ products, filters, categories, savedIds }) {
             : `
               <div class="empty-card">
                 <h2>No matching products found</h2>
-                <p class="card-copy">Try clearing your filters or using a broader search term.</p>
-                <div class="empty-actions">
+                <p class="card-copy">Try a broader search term or reset the filters.</p>
+                <div class="hero-actions">
                   <button class="secondary-btn" data-action="reset-filters" type="button">Reset Filters</button>
                 </div>
               </div>
@@ -284,8 +264,8 @@ export function renderSaved({ products, savedIds }) {
       <section class="catalog-page">
         <div class="section-heading">
           <div>
-            <h2>Saved collection</h2>
-            <p>Your shortlist of products remains here while you continue browsing the catalog.</p>
+            <h2>Saved</h2>
+            <p>Your wishlist stays here while you continue exploring products.</p>
           </div>
         </div>
 
@@ -294,9 +274,9 @@ export function renderSaved({ products, savedIds }) {
             ? `<div class="catalog-grid">${products.map(product => productCard(product, savedIds.includes(product.id))).join("")}</div>`
             : `
               <div class="empty-card">
-                <h2>No saved products yet</h2>
-                <p class="card-copy">Tap the heart button on any product to save it here.</p>
-                <div class="empty-actions">
+                <h2>No saved items yet</h2>
+                <p class="card-copy">Tap the heart button on any product card to add it here.</p>
+                <div class="hero-actions">
                   <a class="primary-btn" href="#/products">Browse Products</a>
                 </div>
               </div>
@@ -312,23 +292,16 @@ export function renderProductDetail({ product, related, savedIds }) {
     title: `Zweep — ${product.title}`,
     html: `
       <section class="detail-page">
-        <div class="inline-actions">
-          <a class="ghost-btn" href="#/products">← Back to catalog</a>
+        <div class="hero-actions">
+          <a class="ghost-btn" href="#/products">← Back to products</a>
         </div>
 
         <div class="detail-layout">
           <div class="detail-media">
-            <img
-              src="${product.image}"
-              alt="${product.title}"
-              width="600"
-              height="500"
-              loading="eager"
-              decoding="async"
-            />
+            <img src="${product.image}" alt="${product.title}" width="600" height="500" />
           </div>
 
-          <div class="detail-info">
+          <div class="info-card detail-info">
             <span class="badge badge--${product.badgeType}">${product.badge}</span>
             <p class="category-label">${categoryLabel(product.category)}</p>
             <h1>${product.title}</h1>
@@ -347,39 +320,39 @@ export function renderProductDetail({ product, related, savedIds }) {
               </div>
             </div>
 
-            <div class="detail-actions">
+            <div class="hero-actions">
               <button class="primary-btn" data-action="add-to-cart" data-product-id="${product.id}" type="button">
                 Add to Cart
               </button>
               <button class="secondary-btn" data-action="buy-now" data-product-id="${product.id}" type="button">
                 Buy Now
               </button>
-              <button class="secondary-btn" data-action="toggle-saved" data-product-id="${product.id}" type="button">
-                ${savedIds.includes(product.id) ? "Remove from Saved" : "Save Product"}
+              <button class="ghost-btn" data-action="toggle-saved" data-product-id="${product.id}" type="button">
+                ${savedIds.includes(product.id) ? "Remove Saved" : "Save Product"}
               </button>
             </div>
 
-            <div class="product-highlights">
+            <div class="tag-row">
               ${product.highlights.map(item => `<span class="highlight-chip">${item}</span>`).join("")}
             </div>
 
-            <article class="detail-side-card">
-              <h3>Product details</h3>
+            <div class="detail-side-card">
+              <h3>Product Details</h3>
               <ul class="spec-list">
                 <li><span>Category</span><strong>${categoryLabel(product.category)}</strong></li>
                 <li><span>Rating</span><strong>${product.rating}</strong></li>
-                <li><span>Ratings Count</span><strong>${product.ratingCount}</strong></li>
+                <li><span>Reviews</span><strong>${product.ratingCount}</strong></li>
                 <li><span>Price</span><strong>${formatPrice(product.price)}</strong></li>
               </ul>
-            </article>
+            </div>
           </div>
         </div>
 
         <section class="section-block">
           <div class="section-heading">
             <div>
-              <h2>Related products</h2>
-              <p>Continue browsing similar items from the same category.</p>
+              <h2>Related Products</h2>
+              <p>Continue shopping with similar products from the same category.</p>
             </div>
           </div>
 
@@ -402,8 +375,8 @@ export function renderCart({ items, subtotal }) {
       <section class="cart-page">
         <div class="section-heading">
           <div>
-            <h2>Your cart</h2>
-            <p>Review selected items, adjust quantities, and continue toward checkout.</p>
+            <h2>Cart</h2>
+            <p>Review products, update quantity, and move to checkout.</p>
           </div>
         </div>
 
@@ -416,14 +389,7 @@ export function renderCart({ items, subtotal }) {
                     <article class="cart-item">
                       <div class="cart-item-grid">
                         <div class="cart-thumb">
-                          <img
-                            src="${item.image}"
-                            alt="${item.title}"
-                            width="400"
-                            height="300"
-                            loading="lazy"
-                            decoding="async"
-                          />
+                          <img src="${item.image}" alt="${item.title}" width="400" height="300" />
                         </div>
 
                         <div class="cart-content">
@@ -433,10 +399,10 @@ export function renderCart({ items, subtotal }) {
 
                           <div class="cart-line">
                             <span class="price">${formatPrice(item.price)}</span>
-                            <span class="muted">Line total: ${formatPrice(item.lineTotal)}</span>
+                            <span>Line Total: ${formatPrice(item.lineTotal)}</span>
                           </div>
 
-                          <div class="cart-actions">
+                          <div class="hero-actions">
                             <div class="qty-controls">
                               <button class="qty-btn" data-action="decrease-qty" data-product-id="${item.id}" type="button">−</button>
                               <span class="qty-value">${item.qty}</span>
@@ -454,19 +420,17 @@ export function renderCart({ items, subtotal }) {
                 </div>
 
                 <aside class="summary-card">
-                  <h2>Order summary</h2>
+                  <h2>Summary</h2>
 
-                  <div class="cart-summary-row">
+                  <div class="summary-line">
                     <span>Subtotal</span>
                     <strong>${formatPrice(subtotal)}</strong>
                   </div>
-
-                  <div class="cart-summary-row">
+                  <div class="summary-line">
                     <span>Shipping</span>
                     <strong>${formatPrice(shipping)}</strong>
                   </div>
-
-                  <div class="cart-summary-row cart-summary-total">
+                  <div class="summary-line">
                     <span>Total</span>
                     <strong>${formatPrice(total)}</strong>
                   </div>
@@ -479,8 +443,8 @@ export function renderCart({ items, subtotal }) {
             : `
               <div class="empty-card">
                 <h2>Your cart is empty</h2>
-                <p class="card-copy">Add products from the catalog to start building your order.</p>
-                <div class="empty-actions">
+                <p class="card-copy">Add products to the cart to continue your shopping flow.</p>
+                <div class="hero-actions">
                   <a class="primary-btn" href="#/products">Browse Products</a>
                 </div>
               </div>
@@ -508,8 +472,7 @@ export function renderCheckout({ items, subtotal, lastOrder }) {
             <p class="card-copy">
               Your order was placed for <strong>${lastOrder.customer}</strong> on ${lastOrder.placedAt}.
             </p>
-            <p class="card-copy">A confirmation flow can be connected here in a future backend/payment integration phase.</p>
-            <div class="empty-actions">
+            <div class="hero-actions">
               <a class="primary-btn" href="#/products">Continue Shopping</a>
             </div>
           </div>
@@ -525,7 +488,7 @@ export function renderCheckout({ items, subtotal, lastOrder }) {
         <div class="section-heading">
           <div>
             <h2>Checkout</h2>
-            <p>Complete your order with a clean, production-style checkout experience.</p>
+            <p>Complete your order with a structured and polished checkout flow.</p>
           </div>
         </div>
 
@@ -534,7 +497,7 @@ export function renderCheckout({ items, subtotal, lastOrder }) {
             ? `
               <div class="checkout-layout">
                 <div class="checkout-card">
-                  <h2>Shipping details</h2>
+                  <h2>Shipping Details</h2>
 
                   <form class="checkout-form" data-form="checkout-form">
                     <div class="checkout-grid">
@@ -553,6 +516,7 @@ export function renderCheckout({ items, subtotal, lastOrder }) {
                     </div>
 
                     <input type="text" name="address" placeholder="Street address" required />
+
                     <div class="checkout-grid">
                       <input type="text" name="city" placeholder="City" required />
                       <input type="text" name="postalCode" placeholder="Postal code" required />
@@ -568,26 +532,24 @@ export function renderCheckout({ items, subtotal, lastOrder }) {
                 </div>
 
                 <aside class="summary-card">
-                  <h2>Order summary</h2>
+                  <h2>Order Summary</h2>
 
                   ${items.map(item => `
-                    <div class="cart-summary-row">
+                    <div class="summary-line">
                       <span>${item.title} × ${item.qty}</span>
                       <strong>${formatPrice(item.lineTotal)}</strong>
                     </div>
                   `).join("")}
 
-                  <div class="cart-summary-row">
+                  <div class="summary-line">
                     <span>Subtotal</span>
                     <strong>${formatPrice(subtotal)}</strong>
                   </div>
-
-                  <div class="cart-summary-row">
+                  <div class="summary-line">
                     <span>Shipping</span>
                     <strong>${formatPrice(shipping)}</strong>
                   </div>
-
-                  <div class="cart-summary-row cart-summary-total">
+                  <div class="summary-line">
                     <span>Total</span>
                     <strong>${formatPrice(total)}</strong>
                   </div>
@@ -597,8 +559,8 @@ export function renderCheckout({ items, subtotal, lastOrder }) {
             : `
               <div class="empty-card">
                 <h2>No items available for checkout</h2>
-                <p class="card-copy">Add a product to your cart or use Buy Now on a product page.</p>
-                <div class="empty-actions">
+                <p class="card-copy">Use Add to Cart or Buy Now on a product to continue.</p>
+                <div class="hero-actions">
                   <a class="primary-btn" href="#/products">Browse Products</a>
                 </div>
               </div>
@@ -616,18 +578,18 @@ export function renderAbout() {
       <section class="about-page">
         <div class="section-heading">
           <div>
-            <h2>Project architecture</h2>
-            <p>Zweep is designed as a polished capstone that combines modular code, route-driven navigation, real data, and deployment readiness.</p>
+            <h2>Project Architecture</h2>
+            <p>Zweep combines modular code, client-side routing, real product data, and deployment readiness.</p>
           </div>
         </div>
 
         <div class="about-grid">
           <article class="about-card">
-            <h3>Modular frontend structure</h3>
+            <h3>Modular Frontend</h3>
             <p class="card-copy">
-              The app is divided into API handling, state management, routing, and rendering modules to keep the architecture clean and maintainable.
+              Data, API, store, router, views, and app boot logic are separated cleanly for maintainability.
             </p>
-            <div class="about-tags">
+            <div class="tag-row">
               <span class="about-tag">api.js</span>
               <span class="about-tag">store.js</span>
               <span class="about-tag">router.js</span>
@@ -636,62 +598,57 @@ export function renderAbout() {
           </article>
 
           <article class="about-card">
-            <h3>Client-side routing</h3>
+            <h3>Client-Side Routing</h3>
             <p class="card-copy">
-              Navigation is handled as a single-page application through route-based rendering of Home, Products, Product Detail, Saved, Cart, and Checkout.
+              Users can move through Home, Products, Product Detail, Saved, Cart, Checkout, and About without page reloads.
             </p>
-            <div class="about-tags">
+            <div class="tag-row">
               <span class="about-tag">SPA</span>
-              <span class="about-tag">Hash Routes</span>
-              <span class="about-tag">Seamless Navigation</span>
+              <span class="about-tag">Route Flow</span>
             </div>
           </article>
 
           <article class="about-card">
-            <h3>Real product data</h3>
+            <h3>Persistent State</h3>
             <p class="card-copy">
-              The catalog uses 20 real products, descriptions, ratings, prices, and images fetched from a public API for realistic presentation.
+              Cart and saved products are stored in localStorage, making the shopping experience persistent across refreshes.
             </p>
-            <div class="about-tags">
+            <div class="tag-row">
+              <span class="about-tag">Cart State</span>
+              <span class="about-tag">Saved State</span>
+            </div>
+          </article>
+
+          <article class="about-card">
+            <h3>Real Product Catalog</h3>
+            <p class="card-copy">
+              The app contains 20 real products with actual image URLs, pricing, category data, and descriptions.
+            </p>
+            <div class="tag-row">
               <span class="about-tag">20 Products</span>
               <span class="about-tag">Real Images</span>
-              <span class="about-tag">Live API Data</span>
             </div>
           </article>
 
           <article class="about-card">
-            <h3>Persistent state</h3>
+            <h3>Deploy Ready</h3>
             <p class="card-copy">
-              Cart, saved items, and filter state are stored in localStorage so the experience remains consistent across browser reloads.
+              As a static route-driven frontend app, Zweep can be deployed directly to Netlify or Vercel.
             </p>
-            <div class="about-tags">
-              <span class="about-tag">Cart</span>
-              <span class="about-tag">Saved</span>
-              <span class="about-tag">Filters</span>
-            </div>
-          </article>
-
-          <article class="about-card">
-            <h3>Performance optimization</h3>
-            <p class="card-copy">
-              API results are cached in sessionStorage, images are lazy-loaded where appropriate, and the app stays lightweight for deployment.
-            </p>
-            <div class="about-tags">
-              <span class="about-tag">Session Cache</span>
-              <span class="about-tag">Lazy Loading</span>
-              <span class="about-tag">Optimized Flow</span>
-            </div>
-          </article>
-
-          <article class="about-card">
-            <h3>Deployment ready</h3>
-            <p class="card-copy">
-              The app is suitable for Vercel or Netlify deployment and can be shared publicly as a polished frontend capstone project.
-            </p>
-            <div class="about-tags">
+            <div class="tag-row">
               <span class="about-tag">Netlify</span>
               <span class="about-tag">Vercel</span>
-              <span class="about-tag">Public URL</span>
+            </div>
+          </article>
+
+          <article class="about-card">
+            <h3>Capstone Goals</h3>
+            <p class="card-copy">
+              This project demonstrates frontend structure, route handling, interactive shopping flow, and professional-grade delivery.
+            </p>
+            <div class="tag-row">
+              <span class="about-tag">Frontend Architecture</span>
+              <span class="about-tag">Production Mindset</span>
             </div>
           </article>
         </div>
@@ -707,8 +664,8 @@ export function renderNotFound() {
       <section class="catalog-page">
         <div class="empty-card">
           <h2>Page not found</h2>
-          <p class="card-copy">The route you requested does not exist. Return home or continue browsing the catalog.</p>
-          <div class="empty-actions">
+          <p class="card-copy">The route you requested does not exist.</p>
+          <div class="hero-actions">
             <a class="primary-btn" href="#/">Go Home</a>
             <a class="secondary-btn" href="#/products">Browse Products</a>
           </div>

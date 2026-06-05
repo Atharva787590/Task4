@@ -1,4 +1,4 @@
-import { products } from "./data/products.js";
+import { fetchProducts } from "./api.js";
 import {
   subscribe,
   setProducts,
@@ -180,9 +180,33 @@ appRoot.addEventListener("submit", (event) => {
   }
 });
 
-function boot() {
-  setProducts(products);
-  render();
+async function boot() {
+  appRoot.innerHTML = `
+    <section class="catalog-page">
+      <div class="empty-card">
+        <h2>Loading Zweep...</h2>
+        <p class="card-copy">Preparing product catalog and storefront.</p>
+      </div>
+    </section>
+  `;
+
+  try {
+    const products = await fetchProducts();
+    setProducts(products);
+    render();
+  } catch (error) {
+    appRoot.innerHTML = `
+      <section class="catalog-page">
+        <div class="empty-card">
+          <h2>Unable to load catalog</h2>
+          <p class="card-copy">${error.message}</p>
+          <div class="hero-actions">
+            <button class="primary-btn" onclick="window.location.reload()">Try Again</button>
+          </div>
+        </div>
+      </section>
+    `;
+  }
 }
 
 boot();
