@@ -1,4 +1,4 @@
-import { fetchProducts } from "./api.js";
+import { products } from "./data/products.js";
 import {
   subscribe,
   setProducts,
@@ -12,8 +12,7 @@ import {
   getRelatedProducts,
   getCartItems,
   getCartSubtotal,
-  actions,
-  isSaved
+  actions
 } from "./store.js";
 import { getCurrentRoute, getActiveNavName } from "./router.js";
 import {
@@ -82,15 +81,13 @@ function render() {
     });
   } else if (route.name === "product") {
     const product = getProductBySlug(route.slug);
-    if (!product) {
-      view = renderNotFound();
-    } else {
-      view = renderProductDetail({
-        product,
-        related: getRelatedProducts(product),
-        savedIds: state.saved
-      });
-    }
+    view = product
+      ? renderProductDetail({
+          product,
+          related: getRelatedProducts(product),
+          savedIds: state.saved
+        })
+      : renderNotFound();
   } else if (route.name === "cart") {
     view = renderCart({
       items: getCartItems(),
@@ -128,41 +125,15 @@ appRoot.addEventListener("click", (event) => {
 
   const { action, productId, category } = actionEl.dataset;
 
-  if (action === "add-to-cart") {
-    actions.addToCart(productId);
-  }
-
-  if (action === "buy-now") {
-    actions.buyNow(productId);
-  }
-
-  if (action === "toggle-saved") {
-    actions.toggleSaved(productId);
-  }
-
-  if (action === "increase-qty") {
-    actions.increaseQty(productId);
-  }
-
-  if (action === "decrease-qty") {
-    actions.decreaseQty(productId);
-  }
-
-  if (action === "remove-from-cart") {
-    actions.removeFromCart(productId);
-  }
-
-  if (action === "clear-cart") {
-    actions.clearCart();
-  }
-
-  if (action === "reset-filters") {
-    actions.resetFilters();
-  }
-
-  if (action === "open-category") {
-    actions.openCategory(category);
-  }
+  if (action === "add-to-cart") actions.addToCart(productId);
+  if (action === "buy-now") actions.buyNow(productId);
+  if (action === "toggle-saved") actions.toggleSaved(productId);
+  if (action === "increase-qty") actions.increaseQty(productId);
+  if (action === "decrease-qty") actions.decreaseQty(productId);
+  if (action === "remove-from-cart") actions.removeFromCart(productId);
+  if (action === "clear-cart") actions.clearCart();
+  if (action === "reset-filters") actions.resetFilters();
+  if (action === "open-category") actions.openCategory(category);
 });
 
 appRoot.addEventListener("submit", (event) => {
@@ -209,33 +180,9 @@ appRoot.addEventListener("submit", (event) => {
   }
 });
 
-async function boot() {
-  appRoot.innerHTML = `
-    <section class="catalog-page">
-      <div class="empty-card">
-        <h2>Loading Zweep...</h2>
-        <p class="card-copy">Fetching products and preparing the experience.</p>
-      </div>
-    </section>
-  `;
-
-  try {
-    const products = await fetchProducts();
-    setProducts(products);
-    render();
-  } catch (error) {
-    appRoot.innerHTML = `
-      <section class="catalog-page">
-        <div class="empty-card">
-          <h2>Unable to load catalog</h2>
-          <p class="card-copy">${error.message}</p>
-          <div class="empty-actions">
-            <button class="primary-btn" onclick="window.location.reload()">Try Again</button>
-          </div>
-        </div>
-      </section>
-    `;
-  }
+function boot() {
+  setProducts(products);
+  render();
 }
 
 boot();
